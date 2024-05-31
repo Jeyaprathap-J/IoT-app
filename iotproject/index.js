@@ -9,7 +9,8 @@ const port = new SerialPort({
 const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n'}));
 
 port.on('open', () => {
-    console.log('Serial port open');
+    console.log('Arduino UNO is Connected Successfully!');
+    console.log('Fetching Data...');
 });
 
 parser.on('data', (data) => {
