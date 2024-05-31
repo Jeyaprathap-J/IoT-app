@@ -1,9 +1,13 @@
 const express = require('express');
+const cors = require('cors');  // Import the cors middleware
 const {SerialPort} = require('serialport');
 const {ReadlineParser} = require('@serialport/parser-readline');
 
 const app = express();
 const port = 3001; // Server port
+
+// Use the cors middleware
+app.use(cors());
 
 const serialPort = new SerialPort({
     path:'COM3',
