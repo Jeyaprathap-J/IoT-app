@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 function App() {
   const [serialData, setSerialData] = useState('');
-  const [inputData, setInputData] = useState('');
+  var [inputData, setInputData] = useState('');
   const [response, setResponse] = useState('');
 
   const fetchData = async () => {
@@ -22,13 +22,15 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if(inputData === "OFF"){
+      if(serialData.includes("OFF")){
+        inputData = "ON";
         setInputData("ON");
       }
       else{
+        inputData = "OFF";
         setInputData("OFF");
+        console.log("ID",inputData);
       }
-      console.log("ID",inputData);
       const res = await fetch('http://localhost:3001/send-data', {
         method: 'POST',
         headers: {
@@ -45,6 +47,8 @@ function App() {
 
     fetchData();
   };
+
+  console.log("Verify first load", inputData, serialData, response);
 
   return (
     <div className="App">
