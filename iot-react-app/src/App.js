@@ -7,9 +7,10 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3001/serial-data');
+      const response = await fetch(`https://localhost:44342/api/Communication/Receive`);
       const result = await response.json();
-      setSerialData(result.data);
+      console.log(result.data);
+      setSerialData(result);
     } catch (error) {
       console.error('Error fetching data', error);
     }
@@ -21,23 +22,11 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(inputData);
     try {
-      if(inputData === "OFF"){
-        setInputData("ON");
-      }
-      else{
-        setInputData("OFF");
-      }
-      console.log("ID",inputData);
-      const res = await fetch('http://localhost:3001/send-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ data: inputData }),
-      });
-      const result = await res.json();
-      setResponse(result.message);
+      const res = await fetch(`https://localhost:44342/api/Communication/Send?data=${inputData}`);
+      //const result = await res.json();
+      setResponse(res.message);
     } catch (error) {
       setResponse('Error sending data');
       console.error('Error:', error);
@@ -52,9 +41,13 @@ function App() {
         <h1>Communication Between Arduino UNO and React application</h1>
         <p>{serialData}</p>
         <form onSubmit={handleSubmit}>
-          <button 
-          type="submit"
-           >{serialData.includes("OFF")? 'Turn ON' : 'Turn OFF'}</button>
+          <input
+            type="text"
+            value={inputData}
+            onChange={(e) => setInputData(e.target.value)}
+            placeholder="Enter data to send"
+          />
+          <button type="submit">Send</button>
         </form>
         <p>{response}</p>
       </header>
