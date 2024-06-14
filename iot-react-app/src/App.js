@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 
 function App() {
   const [serialData, setSerialData] = useState('');
-  const [inputData, setInputData] = useState('');
+  var [inputData, setInputData] = useState('');
   const [response, setResponse] = useState('');
 
   const fetchData = async () => {
     try {
       const response = await fetch(`https://localhost:44342/api/Communication/Receive`);
       const result = await response.json();
-      console.log(result.data);
-      setSerialData(result);
+      console.log(result.status);
+      setSerialData(result.status);
     } catch (error) {
       console.error('Error fetching data', error);
     }
@@ -22,11 +22,21 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(inputData);
     try {
       const res = await fetch(`https://localhost:44342/api/Communication/Send?data=${inputData}`);
-      //const result = await res.json();
-      setResponse(res.message);
+      const result = await res.json();
+      console.log(result.status);
+      setResponse(result.status);
+
+      if(inputData === "OFF"){
+        inputData = "ON";
+        setInputData("ON");
+      }
+      else{
+        inputData = "OFF";
+        setInputData("OFF");
+      }
+
     } catch (error) {
       setResponse('Error sending data');
       console.error('Error:', error);
@@ -40,14 +50,10 @@ function App() {
       <header className="App-header">
         <h1>Communication Between Arduino UNO and React application</h1>
         <p>{serialData}</p>
+        <button onClick={fetchData}>Fetch</button>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={inputData}
-            onChange={(e) => setInputData(e.target.value)}
-            placeholder="Enter data to send"
-          />
-          <button type="submit">Send</button>
+          <button
+          type="submit">{(inputData === "ON")? 'Turn ON' : 'Turn OFF'}</button>
         </form>
         <p>{response}</p>
       </header>
